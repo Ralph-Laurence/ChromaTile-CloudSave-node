@@ -9,6 +9,9 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+//const { config } = require('process');
+const connectDb = require('./db');
+let dbConnected = false;
 
 var app = express();
 
@@ -24,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// register routes
 app.use('/', routes);
 app.use('/users', users);
 
@@ -58,8 +62,31 @@ app.use(function (err, req, res, next) {
     });
 });
 
+// middleware to check for database connection
+app.use((req, res, next) => {
+    if (!dbConnected)
+    {
+        return res.status(503)
+                  .json("Service unavailable. Please try again later");
+    }
+    next()
+})
+
 app.set('port', process.env.PORT || 3000);
 
-var server = app.listen(app.get('port'), function () {
-    debug('Express server listening on port ' + server.address().port);
-});
+// connect to database first before listening to requests.
+connectDb()
+    .then(() => {
+
+        // only serve the application when we successfully connect to mongodb
+        var server = app.listen(app.get('port'), function () {
+            debug('Express server listening on port ' + server.address().port);
+        });
+    })
+    .catch(err => {
+        console.error('Failed to connect to the database:', err.message);
+        // Perform any necessary logging or notifications
+        // Server continues running to return 503 status for requests
+    });
+
+
