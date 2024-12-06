@@ -122,6 +122,7 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 .vs/
+.vscode/
 obj/
 bin/
 # yarn v2

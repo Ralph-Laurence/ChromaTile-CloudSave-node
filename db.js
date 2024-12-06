@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const connectDb = () => {
     
     return mongoose.connect(config.connString)
-            .then(() => console.log('Connected to MongoDB'))
+            .then(() => console.log(`Connected to MongoDB\n${config.connString}`))
             .catch(err => console.error('Connection error', err));
 };
 

@@ -13,10 +13,13 @@ const Controller = require('../controllers/user.controller');
 router.post('/api/register', Controller.registerUser);
 
 /* Retrieve all users */
-router.get('/', Controller.getUsers);
+router.get('/api/users', Controller.getUsers);
 
 /* Find a single user */
 router.get('/api/find/:id', Controller.findUser);
+
+/* Authenticate user */
+router.post('/api/login', Controller.loginUser);
 
 /* Update a user */
 // router.put('/api/update/:id', Controller.updateUser);

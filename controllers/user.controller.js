@@ -1,4 +1,4 @@
-const User = require('../models/user.model.js');
+const User = require('../models/user.model');
 
 const registerUser = async (req, res) => {
     
@@ -61,9 +61,34 @@ const findUser = async (req, res) =>
 //     }
 // };
 
+const loginUser = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        // Find the user by username
+        const user = await User.findOne({ username });
+
+        if (!user)
+            return res.status(401).send('Invalid username or password');
+
+        // Compare the provided password with the stored hash
+        const isMatch = await user.comparePassword(password);
+
+        if (!isMatch)
+            return res.status(401).send('Invalid username or password');
+
+        res.status(200).send('Login successful');
+    }
+    catch (error)
+    {
+        res.status(500).send(error);
+    }
+}
+
 module.exports = {
     getUsers,
     registerUser,
     findUser,
+    loginUser
     //updateUser
 };
