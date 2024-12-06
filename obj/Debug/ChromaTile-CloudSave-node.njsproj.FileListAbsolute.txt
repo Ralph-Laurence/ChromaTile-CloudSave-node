@@ -1,3 +1,0 @@
-E:\Game Dev\ChromaTile-CloudSave-node\obj\Debug\ChromaTile-CloudSave-node.njsproj.AssemblyReference.cache
-E:\Game Dev\ChromaTile-CloudSave-node\obj\Debug\ChromaTile-CloudSave-node.njsproj.CoreCompileInputs.cache
-E:\Game Dev\ChromaTile-CloudSave-node\bin\Microsoft.NodejsTools.WebRole.dll
