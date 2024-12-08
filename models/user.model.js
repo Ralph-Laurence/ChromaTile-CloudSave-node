@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt   = require('bcrypt');
 
 const UserSchema = mongoose.Schema({
     // email: {
@@ -10,6 +10,8 @@ const UserSchema = mongoose.Schema({
     //     lowercase   : true,
     //     match       : [/\S+@\S+\.\S+/, 'is invalid']
     // },
+
+    // For authentication
     password: {
         type        : String,
         required    : true 
@@ -20,6 +22,13 @@ const UserSchema = mongoose.Schema({
         unique      : [true, "Username is taken!"],
         trim        : true
     },
+
+    // For cloud save
+    userdata: {
+        type        : String,
+        required    : false,
+        trim        : true
+    }
 },
 { timestamps: true});
 
