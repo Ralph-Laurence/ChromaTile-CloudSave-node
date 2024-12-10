@@ -2,22 +2,12 @@
 var express = require('express');
 var router  = express.Router();
 const authenticateToken = require('../middlewares/authenticatetoken');
-
 const Controller = require('../controllers/user.controller');
+const fileupload = require('../middlewares/fileupload');
+const filedownload = require('../middlewares/filedownload');
 
-/* GET users listing. */
-// router.get('/', function (req, res) {
-//     res.send('respond with a resource');
-// });
-// const jwt = require('jsonwebtoken');
-// const SECRET_KEY = process.env.SECRET_KEY;
-// require('dotenv').config();
-
-// router.get('/test', (req, res) => {
-//     // Generate JWT with 7 days expiry
-//     const token = jwt.sign({ id: 'abc123' }, SECRET_KEY, { expiresIn: '7d' });
-//     res.status(200).json({'__token': token, 'secret-key': process.env.SECRET_KEY});
-// })
+//const rootDir = require('../root_path');
+//const multer  = require('multer');
 /* Add a new user */
 router.post('/register', Controller.registerUser);
 
@@ -30,7 +20,10 @@ router.get('/get', authenticateToken, Controller.getUsers);
 /* Find a single user */
 router.get('/find/:id', authenticateToken, Controller.findUser);
 
-/* Update a user */
-// router.put('/api/update/:id', Controller.updateUser);
+/* Upload file */
+router.put('/upload', authenticateToken, Controller.checkUserExists, fileupload);
+
+/* Download file */
+router.get('/download', authenticateToken, Controller.checkUserExists, filedownload);//  filedownload);
 
 module.exports = router;

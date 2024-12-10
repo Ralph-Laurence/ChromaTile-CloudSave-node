@@ -1,8 +1,12 @@
 require('dotenv').config();
 
-const User   = require('../models/user.model');
-const jwt    = require('jsonwebtoken');
-const cipher = require('../security/cipher');
+const User    = require('../models/user.model');
+const jwt     = require('jsonwebtoken');
+const cipher  = require('../security/cipher');
+// const path    = require('path');
+// const fs      = require('fs');
+// const rootDir = require('../root_path');
+// const multer  = require('multer');
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -104,10 +108,74 @@ const findUser = async (req, res) =>
     }
 };
 
+const checkUserExists = async (req, res, next) =>
+{
+    try
+    {
+        const decryptedId = cipher.decrypt(req.headers["userid"]);
+        const user = await User.findById(decryptedId);
+        
+        if (!user)
+        {
+            return res.status(404).send('User not found');
+        }
+
+        req.UserID = decryptedId; // Store the decrypted ID in the request object
+        console.log(`Decrypted = ${req.UserID}`);
+
+        next();
+    }
+    catch (err)
+    {
+        console.log(err.message);
+        res.status(500).send('Server error');
+    }
+}
+/*
+const upload = (req, res) => {
+
+    let userId = req.UserID;
+    if (!userId)
+        return res.status(400).send('User ID missing from headers');
+
+    const userDir = path.join(rootDir, 'uploads', 'save', userId);
+
+    if (!fs.existsSync(userDir))
+    {
+        try 
+        {
+            fs.mkdirSync(userDir, { recursive: true });
+            console.log(`Directory created: ${userDir}`);
+        } 
+        catch (err) {
+            console.error(`Error creating directory: ${err}`);
+            return res.status(500).send('Error creating directory');
+        }
+    }
+
+    let fileStream = fs.createWriteStream(path.join(userDir, 'user.sav'));
+
+    req.pipe(fileStream);
+
+    req.on('end', () => {
+        res.status(200).send('File uploaded successfully');
+    });
+
+    req.on('error', (err) => {
+        console.error(err);
+        res.status(500).send('Server error');
+    });
+};
+*/
+// Set up storage with `multer`
+
+//const handleUploadComplete = (req, res) => { console.log("Handle upload complete"); console.log(req.body); if (req.file) res.status(200).send('File uploaded successfully'); else res.status(400).send('Uploaded failed!'); };
+
 module.exports = {
     getUsers,
     registerUser,
     findUser,
-    loginUser
-    //updateUser
+    loginUser,
+    checkUserExists,
+    //handleUploadComplete
 };
